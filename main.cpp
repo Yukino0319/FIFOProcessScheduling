@@ -3,44 +3,48 @@
 #define PROCESS_SHCEDULING_MAX 12
 #define PAGE_TABLE_MAX 3
 
-int PageTableIsNULL(int aPage_Table[][PROCESS_SHCEDULING_MAX], int aFront, int anI);    //Ò³±íÊÇ·ñÎª¿Õ
-int PageTableIsHit(int aPage_Table[][PROCESS_SHCEDULING_MAX], int anI, int aProcessNum);    //Ò³±íÊÇ·ñÃüÖĞ
+int PageTableIsNULL(int aPage_Table[][PROCESS_SHCEDULING_MAX], int aFront, int anI);    //é¡µè¡¨æ˜¯å¦ä¸ºç©º
+int PageTableIsHit(int aPage_Table[][PROCESS_SHCEDULING_MAX], int anI, int aProcessNum);    //é¡µè¡¨æ˜¯å¦å‘½ä¸­
 void OutPutProcessScheduling(int aPage_Table[][PROCESS_SHCEDULING_MAX], int aProcess_Scheduling[], char aPage_Table_Flag[], int aPage_Table_Hit_Count);
 
 int main(){
-    //½ø³Ìµ÷¶ÈĞòÁĞ
+    //è¿›ç¨‹è°ƒåº¦åºåˆ—
     int process_scheduling[PROCESS_SHCEDULING_MAX] = {1, 2, 3, 4, 1, 2, 5, 1, 2, 3, 4, 5};
-    //Ò³±í
+    //é¡µè¡¨
     int page_table[PAGE_TABLE_MAX][PROCESS_SHCEDULING_MAX];
-    //Ò³±í³õÊ¼Îª¿Õ
+    //é¡µè¡¨åˆå§‹ä¸ºç©º
     page_table[0][0] = 0;
     page_table[1][0] = 0;
     page_table[2][0] = 0;
-    //Ò³±íÊÇ·ñ±»ÃüÖĞ£¬'N'±íÊ¾È±Ò³£¬'Y'±íÊ¾ÃüÖĞ
+    //æ·˜æ±°é¡ºåº
+    int off_order[PROCESS_SHCEDULING_MAX];
+    int buf_offorder = 0;
+    //é¡µè¡¨æ˜¯å¦è¢«å‘½ä¸­ï¼Œ'Y'è¡¨ç¤ºç¼ºé¡µï¼Œ'N'è¡¨ç¤ºå‘½ä¸­
     char page_table_flag[PROCESS_SHCEDULING_MAX];
-    //FIFO¶ÓÊ×£¬ÓÉÓÚÒ³±íÊÇÏßĞÔ½á¹¹£¬Ã¿·¢ÉúÒ³ÃæÖÃ»»£¬front = (front + 1) % PAGE_TABLE_MAX
+    //FIFOé˜Ÿé¦–ï¼Œç”±äºé¡µè¡¨æ˜¯çº¿æ€§ç»“æ„ï¼Œæ¯å‘ç”Ÿé¡µé¢ç½®æ¢ï¼Œfront = (front + 1) % PAGE_TABLE_MAX
     int front = 0;
     int page_table_hit_count = 0;
 
     for(int i = 0; i < PROCESS_SHCEDULING_MAX; i++){
-        //½ø³Ìµ÷¶È
-        //Èç¹ûÃüÖĞ£¬¸üĞÂÒ³±íĞÅÏ¢
+        //è¿›ç¨‹è°ƒåº¦
+        //å¦‚æœå‘½ä¸­ï¼Œæ›´æ–°é¡µè¡¨ä¿¡æ¯
         if(!PageTableIsHit(page_table, i, process_scheduling[i])){
             //page_table[front][i] = process_scheduling[i];
-            page_table_flag[i] = 'Y';
+            page_table_flag[i] = 'N';
             page_table_hit_count++;
         }
-        //Î´ÃüÖĞ£¬·¢ÉúÈ±Ò³ÖĞ¶Ï
+        //æœªå‘½ä¸­ï¼Œå‘ç”Ÿç¼ºé¡µä¸­æ–­
         else{
-            //ÏÂÃæÁ½¸öÌõ¼ş·ÖÖ§Óï¾ä¿éÏàÍ¬£¬µ«±¾ÖÊ²»Í¬£¬ifÖĞµÄ±íÊ¾Ïò¿ÕÒ³±íĞ´ÈëĞÅÏ¢£¬¶øelseÖĞµÄ±íÊ¾¶ÔÂúÒ³±í½øĞĞÌÔÌ­²¢Ğ´ÈëĞÂ½ø³Ì
-            //Èç¹ûÓĞ¿ÕÓàÒ³±íÏî£¬¸üĞÂÒ³±íĞÅÏ¢
+            //ä¸‹é¢ä¸¤ä¸ªæ¡ä»¶åˆ†æ”¯è¯­å¥å—ç›¸åŒï¼Œä½†æœ¬è´¨ä¸åŒï¼Œifä¸­çš„è¡¨ç¤ºå‘ç©ºé¡µè¡¨å†™å…¥ä¿¡æ¯ï¼Œè€Œelseä¸­çš„è¡¨ç¤ºå¯¹æ»¡é¡µè¡¨è¿›è¡Œæ·˜æ±°å¹¶å†™å…¥æ–°è¿›ç¨‹
+            //å¦‚æœæœ‰ç©ºä½™é¡µè¡¨é¡¹ï¼Œæ›´æ–°é¡µè¡¨ä¿¡æ¯
             if(!PageTableIsNULL(page_table, front, i))
                 page_table[front][i] = process_scheduling[i];
-            //ÎŞ¿ÕÓàÒ³±íÏî£¬FIFOµ÷¶ÈËã·¨
+            //æ— ç©ºä½™é¡µè¡¨é¡¹ï¼ŒFIFOè°ƒåº¦ç®—æ³•
             else{
+                off_order[buf_offorder++] = page_table[front][i];
                 page_table[front][i] = process_scheduling[i];
             }
-            page_table_flag[i] = 'N';
+            page_table_flag[i] = 'Y';
             front = (front + 1) % 3;
         }
         if(i < PROCESS_SHCEDULING_MAX - 1){
@@ -51,20 +55,26 @@ int main(){
     }
 
     OutPutProcessScheduling(page_table, process_scheduling, page_table_flag, page_table_hit_count);
+
+    //è¾“å‡ºæ·˜æ±°é¡ºåº
+    printf("æ·˜æ±°é¡ºåºï¼š");
+    for(int k = 0; k < buf_offorder; k++)
+        printf("%d ", off_order[k]);
+    printf("\n");
     return 0;
 }
 
 int PageTableIsNULL(int aPage_Table[][PROCESS_SHCEDULING_MAX], int aFront, int anI){
-    //Èç¹ûÊÇµÚÒ»´Î½ø³Ìµ÷¶È
+    //å¦‚æœæ˜¯ç¬¬ä¸€æ¬¡è¿›ç¨‹è°ƒåº¦
     if(0 == anI) return 0;
-    //Èç¹ûÎª¿Õ·µ»Ø0£¬·ñÔò·µ»Ø1
+    //å¦‚æœä¸ºç©ºè¿”å›0ï¼Œå¦åˆ™è¿”å›1
     return (0 == aPage_Table[aFront][anI - 1] ? 0 : 1);
 }
 
 int PageTableIsHit(int aPage_Table[][PROCESS_SHCEDULING_MAX], int anI, int aProcessNum){
-    //Èç¹ûÊÇµÚÒ»´Î½ø³Ìµ÷¶È
+    //å¦‚æœæ˜¯ç¬¬ä¸€æ¬¡è¿›ç¨‹è°ƒåº¦
     if(0 == anI) return 1;
-    //Èç¹ûÎªÃüÖĞ·µ»Ø0£¬·ñÔò·µ»Ø1
+    //å¦‚æœä¸ºå‘½ä¸­è¿”å›0ï¼Œå¦åˆ™è¿”å›1
     for(int i = 0; i < PAGE_TABLE_MAX; i++){
         if(aProcessNum == aPage_Table[i][anI-1]){
             return 0;
@@ -75,7 +85,7 @@ int PageTableIsHit(int aPage_Table[][PROCESS_SHCEDULING_MAX], int anI, int aProc
 }
 
 void OutPutProcessScheduling(int aPage_Table[][PROCESS_SHCEDULING_MAX], int aProcess_Scheduling[], char aPage_Table_Flag[], int aPage_Table_Hit_Count){
-    printf("½ø³Ìµ÷¶ÈĞòÁĞ¼°Ò³Ãæµ÷¶ÈËã·¨£¨N±íÊ¾Î´ÃüÖĞ£¬Y±íÊ¾ÃüÖĞ£©£º\n");
+    printf("è¿›ç¨‹è°ƒåº¦åºåˆ—åŠé¡µé¢è°ƒåº¦ç®—æ³•ï¼ˆNè¡¨ç¤ºæœªå‘½ä¸­ï¼ŒYè¡¨ç¤ºå‘½ä¸­ï¼‰ï¼š\n");
     printf("========================================\n");
     printf(" ");
     for(int i = 0; i < PROCESS_SHCEDULING_MAX; i++)
@@ -92,6 +102,6 @@ void OutPutProcessScheduling(int aPage_Table[][PROCESS_SHCEDULING_MAX], int aPro
     for(int i = 0; i < PROCESS_SHCEDULING_MAX; i++)
         printf("  %c", aPage_Table_Flag[i]);
     printf("\n");
-    printf("È±Ò³ÂÊ = %.2f%%\n", (PROCESS_SHCEDULING_MAX - aPage_Table_Hit_Count) * 100.0 / PROCESS_SHCEDULING_MAX);
+    printf("ç¼ºé¡µç‡ = %.2f%%\n", (PROCESS_SHCEDULING_MAX - aPage_Table_Hit_Count) * 100.0 / PROCESS_SHCEDULING_MAX);
     printf("========================================\n");
 }
