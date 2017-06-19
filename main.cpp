@@ -3,7 +3,7 @@
 #define PROCESS_SHCEDULING_MAX 12
 #define PAGE_TABLE_MAX 3
 
-int PageTableIsNULL(int aPage_Table[][PROCESS_SHCEDULING_MAX], int aFront, int anI);    //页表是否为空
+int PageTableIsNULL(int aPage_Table[][PROCESS_SHCEDULING_MAX], int aFront, int anI);    //页表是否有空闲页
 int PageTableIsHit(int aPage_Table[][PROCESS_SHCEDULING_MAX], int anI, int aProcessNum);    //页表是否命中
 void OutPutProcessScheduling(int aPage_Table[][PROCESS_SHCEDULING_MAX], int aProcess_Scheduling[], char aPage_Table_Flag[], int aPage_Table_Hit_Count);
 
@@ -64,6 +64,15 @@ int main(){
     return 0;
 }
 
+/**
+ * 判断页表是否有空闲页
+ * @param aPage_Table[][PROCESS_SHCEDULING_MAX]
+ *          页表
+ * @param anI
+ *          当前进程调度次数
+ * @return
+ *          页表有空闲页：0；无空闲页：1
+ */
 int PageTableIsNULL(int aPage_Table[][PROCESS_SHCEDULING_MAX], int aFront, int anI){
     //如果是第一次进程调度
     if(0 == anI) return 0;
@@ -71,6 +80,17 @@ int PageTableIsNULL(int aPage_Table[][PROCESS_SHCEDULING_MAX], int aFront, int a
     return (0 == aPage_Table[aFront][anI - 1] ? 0 : 1);
 }
 
+/**
+ * 判断当前进程调度是否命中页表
+ * @param aPage_Table[][PROCESS_SHCEDULING_MAX]
+ *          页表
+ * @param anI
+ *          当前进程调度次数
+ * @param aProcessNum
+ *          当前进程调度号
+ * @return
+ *          页表命中：0；未命中：1
+ */
 int PageTableIsHit(int aPage_Table[][PROCESS_SHCEDULING_MAX], int anI, int aProcessNum){
     //如果是第一次进程调度
     if(0 == anI) return 1;
@@ -84,6 +104,18 @@ int PageTableIsHit(int aPage_Table[][PROCESS_SHCEDULING_MAX], int anI, int aProc
     return 1;
 }
 
+/**
+ * 判断当前进程调度是否命中页表
+ * @param aPage_Table[][PROCESS_SHCEDULING_MAX]
+ *          页表
+ * @param aProcess_Scheduling[]
+ *          进程调度序列
+ * @param aPage_Table_Flag[]
+ *          某次进程调度时，页表是否缺页序列
+ * @param aPage_Table_Hit_Count
+ *          页表命中次数
+ * @return
+ */
 void OutPutProcessScheduling(int aPage_Table[][PROCESS_SHCEDULING_MAX], int aProcess_Scheduling[], char aPage_Table_Flag[], int aPage_Table_Hit_Count){
     printf("进程调度序列及页面调度算法（N表示未命中，Y表示命中）：\n");
     printf("========================================\n");
