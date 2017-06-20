@@ -13,9 +13,8 @@ int main(){
     //页表
     int page_table[PAGE_TABLE_MAX][PROCESS_SHCEDULING_MAX];
     //页表初始为空
-    page_table[0][0] = 0;
-    page_table[1][0] = 0;
-    page_table[2][0] = 0;
+    for(int i = 0; i < PAGE_TABLE_MAX; ++i)
+        page_table[i][0] = 0;
     //淘汰顺序
     int off_order[PROCESS_SHCEDULING_MAX];
     int buf_offorder = 0;
@@ -45,12 +44,11 @@ int main(){
                 page_table[front][i] = process_scheduling[i];
             }
             page_table_flag[i] = 'Y';
-            front = (front + 1) % 3;
+            front = (front + 1) % PAGE_TABLE_MAX;
         }
         if(i < PROCESS_SHCEDULING_MAX - 1){
-            page_table[0][i+1] = page_table[0][i];
-            page_table[1][i+1] = page_table[1][i];
-            page_table[2][i+1] = page_table[2][i];
+            for (int j = 0; j < PAGE_TABLE_MAX; ++j)
+                page_table[j][i+1] = page_table[j][i];
         }
     }
 
